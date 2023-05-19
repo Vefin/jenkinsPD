@@ -81,7 +81,7 @@ def deploy(String environment, int port){
     echo "Deployment to ${environment} has started.."
     git branch: 'main', poll: true, url: 'https://github.com/mtararujs/python-greetings'
     //bat "npm install"
-    bat "pm2 delete greetings-app-${environment} & set errorlevel=0"
+    bat "pm2 delete greetings-app-${environment} & EXIT /B 0"
     bat "pm2 start app.py --name greetings-app-${environment} -- --port ${port}"
 }
 
