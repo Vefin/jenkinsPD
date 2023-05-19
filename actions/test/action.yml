@@ -1,0 +1,16 @@
+inputs:
+  environment:
+    description: 'Testing environment'
+    default: 'dev'
+runs:
+  using: "composite"
+  steps: 
+    - name: Install depedencies and run REST API integration tests
+      working-directory: api-tests
+      run: |
+        echo Testing test set on ${{ inputs.environment }} has started..
+        dir
+        npm install
+        npm run greetings greetings_${{ inputs.environment }}
+      shell: cmd
+

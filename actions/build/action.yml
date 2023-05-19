@@ -1,0 +1,9 @@
+runs:
+  using: "composite"
+  steps:
+    - name: Install dependencies
+      working-directory: python-env
+      run: |
+       echo Installing all required depdendencies..
+       pip3 install -r requirements.txt
+      shell: cmd

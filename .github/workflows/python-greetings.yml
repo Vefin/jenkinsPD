@@ -1,1 +1,128 @@
+name: Python Greetings
 
+on:
+  push:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  install-pip-deps:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3.5.2
+      - uses: actions/checkout@v3.5.2
+        with:
+          repository: 'mtararujs/python-greetings'
+          path: 'python-env'
+      - uses: ./.github/actions/build
+
+  deploy-to-dev:
+    runs-on: self-hosted
+    needs: [install-pip-deps]
+    steps:
+      - uses: actions/checkout@v3.5.2
+      - uses: actions/checkout@v3.5.2
+        with:
+          repository: 'mtararujs/python-greetings'
+          path: 'python-env'
+      - uses: ./.github/actions/deploy
+        with:
+          port: 7001
+          environment: 'dev'
+
+  tests-on-dev:
+    runs-on: self-hosted
+    needs: [deploy-to-dev]
+    steps:
+      - uses: actions/checkout@v3.5.2
+      - uses: actions/checkout@v3.5.2
+        with:
+          repository: 'Vefin/course-js-api-framework'
+          path: 'api-tests'
+      - uses: ./.github/actions/test
+        with:
+          environment: 'dev'
+
+  deploy-to-staging:
+    runs-on: self-hosted
+    needs: [tests-on-dev]
+    steps:
+      - uses: actions/checkout@v3.5.2
+      - uses: actions/checkout@v3.5.2
+        with:
+          repository: 'mtararujs/python-greetings'
+          path: 'python-env'
+      - uses: ./.github/actions/deploy
+        with:
+          port: 7002
+          environment: 'staging'
+
+  tests-on-staging:
+    runs-on: self-hosted
+    needs: [deploy-to-staging]
+    steps:
+      - uses: actions/checkout@v3.5.2
+      - uses: actions/checkout@v3.5.2
+        with:
+          repository: 'Vefin/course-js-api-framework'
+          path: 'api-tests'
+      - uses: ./.github/actions/test
+        with:
+          environment: 'staging'
+
+  deploy-to-preprod:
+    runs-on: self-hosted
+    needs: [tests-on-staging]
+    steps:
+      - uses: actions/checkout@v3.5.2
+      - uses: actions/checkout@v3.5.2
+        with:
+          repository: 'mtararujs/python-greetings'
+          path: 'python-env'
+      - uses: ./.github/actions/deploy
+        with:
+          port: 7003
+          environment: 'preprod'
+
+  tests-on-preprod:
+    runs-on: self-hosted
+    needs: [deploy-to-preprod]
+    steps:
+      - uses: actions/checkout@v3.5.2
+      - uses: actions/checkout@v3.5.2
+        with:
+          repository: 'Vefin/course-js-api-framework'
+          path: 'api-tests'
+      - uses: ./.github/actions/test
+        with:
+          environment: 'preprod'
+
+  deploy-to-prod:
+    runs-on: self-hosted
+    needs: [tests-on-preprod]
+    steps:
+      - uses: actions/checkout@v3.5.2
+      - uses: actions/checkout@v3.5.2
+        with:
+          repository: 'mtararujs/python-greetings'
+          path: 'python-env'
+      - uses: ./.github/actions/deploy
+        with:
+          port: 7004
+          environment: 'prod'
+
+  tests-on-prod:
+    runs-on: self-hosted
+    needs: [deploy-to-prod]
+    steps:
+      - uses: actions/checkout@v3.5.2
+      - uses: actions/checkout@v3.5.2
+        with:
+          repository: 'Vefin/course-js-api-framework'
+          path: 'api-tests'
+      - uses: ./.github/actions/test
+        with:
+          environment: 'prod'
